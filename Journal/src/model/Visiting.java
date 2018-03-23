@@ -84,6 +84,16 @@ public class Visiting {
 	public static ObservableList<List<String>> getAllVisitings (String groupName, String dateFrom, String dateTo)
 	{
 		ObservableList<List<String>> mainList = FXCollections.observableArrayList();
+		
+		List<Student> listStudents = Student.getStudents(groupName);
+		for (int i = 0; i < listStudents.size(); i++)
+		{
+			List<String> l = new LinkedList<>();
+			l.add("" + (i + 1));
+			l.add(listStudents.get(i).getName());
+			mainList.add(l);
+		}
+		
 		//TODO quit problem with missed Visiting data of student
 		String querry = "SELECT s.name, v.date, v.mark, v.presence FROM Students AS s "
 				+ "INNER JOIN Groups AS g ON s.groupId = g.groupId "
@@ -94,65 +104,57 @@ public class Visiting {
 		DB db = DB.conn();
 		List<String> strList = db.select(querry);
 
+		String curDate = "";
 		String studentName = "";
-		List<String> list = new LinkedList<String>();
 		for(String str : strList)
 		{
 			String[] split = str.split("\n");
-			if(studentName.equals(split[0]))
+			if(curDate.equals(split[1]) || curDate.equals(""))
 			{
-				list.add(split[1]);
-				list.add(split[2]);
-				list.add(split[3]);
-			}
-			else if(studentName.equals(""))
-			{
-				studentName = split[0];
-				list.add("0");
-				list.add(split[0]);
-				list.add(split[1]);
-				list.add(split[2]);
-				list.add(split[3]);
+				addInfoInStatisticList(mainList, split[0], split[1], split[2], split[3]);
+				
 			}
 			else
 			{
-				mainList.add(list);
-
-				list = new LinkedList<>();
-				studentName = split[0];
-				list.add("0");
-				list.add(split[0]);
-				list.add(split[1]);
-				list.add(split[2]);
-				list.add(split[3]);
+				finishInfoInStatisticList(mainList);
+				addInfoInStatisticList(mainList, split[0], split[1], split[2], split[3]);
+				curDate = split[1];
 			}
 		}
-		mainList.add(list);
-		
-		int maxSize = 2;
-		for(List<String> l : mainList)
-		{
-			if(l.size() > maxSize)
-			{
-				maxSize = l.size();
-			}
-		}
-		for(int i = 0; i < maxSize; i++)
-		{
-			for(List<String> l : mainList)
-			{
-				while(l.size() < maxSize)
-				{
-					l.add("null");
-				}
-			}
-		}
+		finishInfoInStatisticList(mainList);
 		
 		return mainList;
 	}
 	
 	/**
-	 * Delete data about visitings from BD of chosen day of chosen group
+	 * Method for getting list of days, recorded in DB of some group.
+	 * Like, in what days group has visits in DB.
+	 * @param groupName - name of group
+	 * @return string list of dates of group, like {"2018-03-10", "2018-03-30"}
+	 */
+	public static List<String> getDays(String groupName)
+	{
+		List<String> list = new LinkedList<>();
+		
+		String querry = "SELECT s.name, v.date, v.mark, v.presence FROM Students AS s "
+				+ "INNER JOIN Groups AS g ON s.groupId = g.groupId "
+				+ "LEFT JOIN Visitings AS v ON s.studentId = v.studentId WHERE g.name = '"
+				+ groupName	+ "' ORDER BY v.date;";
+
+		DB db = DB.conn();
+		List<String> dbList = db.select(querry);
+		
+		for(String str : dbList)
+		{
+			String strDate = str.split("\n")[0];
+			list.add(strDate);
+		}
+		
+		return list;
+	}
+	
+	/**
+	 * Delete data about visits from BD of chosen day of chosen group
 	 * @param groupName name of Group, which to delete
 	 * @param day which data about to delete
 	 */
@@ -187,4 +189,41 @@ public class Visiting {
 		DB db = DB.conn();
 		db.executeUpdate(querry);
 	}
+
+	private static void addInfoInStatisticList(ObservableList<List<String>> mainList, String name, String date,
+			String mark, String presence)
+	{
+		for(List<String> l : mainList)
+		{
+			if(l.get(1).equals(name))
+			{
+				l.add(date);
+				l.add(mark);
+				l.add(presence);
+			}
+		}
+	}
+	
+	private static void finishInfoInStatisticList(ObservableList<List<String>> mainList)
+	{
+		int maxSize = 2;
+		for(List<String> l : mainList)
+		{
+			if(l.size() > maxSize)
+			{
+				maxSize = l.size();
+			}
+		}
+		for(int i = 0; i < maxSize; i++)
+		{
+			for(List<String> l : mainList)
+			{
+				while(l.size() < maxSize)
+				{
+					l.add("null");
+				}
+			}
+		}
+	}
+	
 }

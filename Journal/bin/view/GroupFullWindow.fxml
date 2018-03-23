@@ -15,12 +15,13 @@
       <HBox prefHeight="100.0" prefWidth="200.0">
          <children>
             <Label text="З " />
-            <DatePicker fx:id="dteFrom" prefHeight="31.0" prefWidth="128.0" />
+            <DatePicker fx:id="dteFrom" editable="false" prefHeight="31.0" prefWidth="128.0" />
             <Label text="по " />
-            <DatePicker fx:id="dteTo" prefHeight="31.0" prefWidth="125.0" />
+            <DatePicker fx:id="dteTo" editable="false" prefHeight="31.0" prefWidth="125.0" />
             <CheckBox fx:id="cheAll" mnemonicParsing="false" text="Усі дні." />
+            <Button fx:id="btnRefresh" mnemonicParsing="false" text="Оновити" />
          </children>
       </HBox>
-      <Button fx:id="btnEdit" mnemonicParsing="false" text="Редагувати день" />
+      <Button fx:id="btnEdit" mnemonicParsing="false" text="Редагувати" />
    </children>
 </VBox>

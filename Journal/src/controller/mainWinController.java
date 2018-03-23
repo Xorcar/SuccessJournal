@@ -2,8 +2,10 @@ package controller;
 
 
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.Comparator;
@@ -27,6 +29,8 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
@@ -55,9 +59,11 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.Pair;
+import model.DB;
 import model.Group;
 import model.Student;
 import model.TableDat;
@@ -76,8 +82,13 @@ public class mainWinController {
 	private ChoiceBox chbGroups;
 
 	@FXML
+	private CheckBox cheGroups;
+	
+	@FXML
 	private TableView<TableDat> tablGroup;
 
+	@FXML
+	private Button btnRefresh;
 	@FXML
 	private Button btnInfo;
 	@FXML
@@ -91,6 +102,8 @@ public class mainWinController {
 	@FXML
 	private ChoiceBox chbGroupsCon;
 
+	@FXML
+	private Button btnRefreshGroups;
 	@FXML
 	private Button btnCreateGroup;
 	@FXML
@@ -128,23 +141,52 @@ public class mainWinController {
 	@FXML
 	private DatePicker dteGroupTo;
 
-	// Add a public no-args constructor
-	public mainWinController() 
-	{
-	}
+	//tab#3 controls ////////////////////////////////
+	
+	@FXML
+	private TextField txtfBdPath;
+	@FXML
+	private Button btnChooseBd;
+	@FXML
+	private Button btnCreateBd;
+
+
 
 	private void fillChoiceBoxes()
 	{
-
-		chbGroups.setItems(FXCollections.observableArrayList(
-				Group.getGroups().toArray()));
+		chbGroups.getItems().clear();
+		chbGroupsCon.getItems().clear();
+		
+		List<Group> groups = Group.getGroups();
 		chbGroupsCon.setItems(FXCollections.observableArrayList(
-				Group.getGroups().toArray()));
-
+				groups));
+		if(!cheGroups.isSelected())
+		{
+			List<Group> groupsToday = Group.getGroups();
+			for(int i = 0; i < groupsToday.size();)
+			{
+				if(!groupsToday.get(i).getDaysOfWeek().contains(LocalDate.now().getDayOfWeek()))
+				{
+					groupsToday.remove(i);
+				}
+				else
+				{
+					i++;
+				}
+			}
+			chbGroups.setItems(FXCollections.observableArrayList(
+					groupsToday));
+		}
+		else
+		{
+			chbGroups.setItems(FXCollections.observableArrayList(
+					groups));
+		}
+		
 		chbGroups.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
 			@Override
 			public void changed(ObservableValue<? extends Number> observableValue, Number number, Number number2) {
-				fillTable(((Group) chbGroupsCon.getItems().get((Integer) number2)).getName());
+				fillTable(((Group) chbGroups.getItems().get((Integer) number2)).getName());
 			}
 		});
 		
@@ -190,8 +232,11 @@ public class mainWinController {
 		TableView<TableDat> table = tablGroup;
 		tablGroup = new TableView<TableDat>();
 
+		table.setPlaceholder(new Label("Виберіть групу з дітьми"));
+		
 		TableColumn<TableDat, String> colNum = new TableColumn<TableDat, String>("№");
 		TableColumn<TableDat, String> colName = new TableColumn<TableDat, String>("Ім'я");
+		TableColumn<TableDat, String> colDate = new TableColumn<TableDat, String>(LocalDate.now().toString());
 		TableColumn<TableDat, String> colMark = new TableColumn<TableDat, String>("Оцінка");
 		TableColumn<TableDat, Boolean> colPres = new TableColumn<TableDat, Boolean>("Прис");
 
@@ -254,11 +299,26 @@ public class mainWinController {
 			}
 		});
 
-		table.getColumns().addAll(colNum, colName, colMark, colPres);
+		colNum.setPrefWidth(30);
+		colName.setPrefWidth(140);
+		colMark.setPrefWidth(50);
+		colPres.setPrefWidth(40);
+		
+		colDate.getColumns().addAll(colMark, colPres);
+		table.getColumns().addAll(colNum, colName, colDate);
 
 		tablGroup = table;
 	}
 
+	private void initCheckBox()
+	{
+		cheGroups.setOnAction(new EventHandler<ActionEvent>() {
+			@Override public void handle(ActionEvent e) {
+				fillChoiceBoxes();
+			}
+		});
+	}
+	
 	public void saveJournalBtnAction()
 	{
 		TableView<TableDat> table = tablGroup;
@@ -287,15 +347,8 @@ public class mainWinController {
 		betweenWindowsData = ((Group)(chbGroups.getSelectionModel().getSelectedItem())).getName();
 		
         try {
-        	String fxmlDocPath = view.viewClass.class.getProtectionDomain().getCodeSource().getLocation().getPath();
-			fxmlDocPath = fxmlDocPath.substring(0, fxmlDocPath.length()- 4);
-			fxmlDocPath += "src" + Main.separator + "view" + Main.separator +
-					"GroupFullWindow.fxml";
-        	System.out.println("Opening fxml: " + fxmlDocPath);
-            FileInputStream fxmlStream = new FileInputStream(fxmlDocPath);
 
-			FXMLLoader loader = new FXMLLoader();
-            Parent root = (VBox) loader.load(fxmlStream);
+			VBox root = (VBox) FXMLLoader.load(getClass().getResource("/view/GroupFullWindow.fxml"));
 			
 			Scene scene = new Scene(root);
 			Stage stage = new Stage();
@@ -337,15 +390,8 @@ public class mainWinController {
 		betweenWindowsData = groupName + "\n" + selectedStudentName;
 		
         try {
-        	String fxmlDocPath = view.viewClass.class.getProtectionDomain().getCodeSource().getLocation().getPath();
-			fxmlDocPath = fxmlDocPath.substring(0, fxmlDocPath.length()- 4);
-			fxmlDocPath += "src" + Main.separator + "view" + Main.separator +
-					"StudentInfoWindow.fxml";
-        	System.out.println("Opening fxml: " + fxmlDocPath);
-            FileInputStream fxmlStream = new FileInputStream(fxmlDocPath);
 
-			FXMLLoader loader = new FXMLLoader();
-            Parent root = (VBox) loader.load(fxmlStream);
+			VBox root = (VBox) FXMLLoader.load(getClass().getResource("/view/StudentInfoWindow.fxml"));
 			
 			Scene scene = new Scene(root);
 			Stage stage = new Stage();
@@ -370,15 +416,8 @@ public class mainWinController {
 				"\n" + lstGroupStudents.getSelectionModel().getSelectedItem().toString();
 		
         try {
-        	String fxmlDocPath = view.viewClass.class.getProtectionDomain().getCodeSource().getLocation().getPath();
-			fxmlDocPath = fxmlDocPath.substring(0, fxmlDocPath.length()- 4);
-			fxmlDocPath += "src" + Main.separator + "view" + Main.separator +
-					"StudentInfoWindow.fxml";
-        	System.out.println("Opening fxml: " + fxmlDocPath);
-            FileInputStream fxmlStream = new FileInputStream(fxmlDocPath);
 
-			FXMLLoader loader = new FXMLLoader();
-            Parent root = (VBox) loader.load(fxmlStream);
+			VBox root = (VBox) FXMLLoader.load(getClass().getResource("/view/StudentInfoWindow.fxml"));
 			
 			Scene scene = new Scene(root);
 			Stage stage = new Stage();
@@ -652,12 +691,66 @@ public class mainWinController {
 
 	}
 
+	private void chooseNewDb()
+	{
+		FileChooser fileChooser = new FileChooser();
+		fileChooser.setTitle("Вибір бази даних");
+		fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("DataBases", "*.db")
+            );
+		File file = fileChooser.showOpenDialog(new Stage());
+        if (file != null) {
+            DB.setDbLocation(file.getPath());
+            txtfBdPath.setText(file.getPath());
+        }
+        
+        fillChoiceBoxes();
+	}
+	
+	private void createNewDb()
+	{
+		FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Створення нової бази даних");
+        fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("DataBases", "*.db")
+            );
+        File file = fileChooser.showSaveDialog(new Stage());
+        if (file != null) {
+            DB.createDb(file.getPath());
+        }
+	}
+	
+	private void initDbTextField()
+	{
+		try {
+			String curFolder = new File(".").getCanonicalPath().toString();
+			if(new File(curFolder, "students.db").exists())
+			{
+				txtfBdPath.setText((curFolder + File.separatorChar + "students.db"));
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	@FXML
 	private void initialize() 
 	{
-		System.out.println("initialize of controller");
+		System.out.println("initialize of main controller");
+		
+		initDbTextField();
 		fillChoiceBoxes();
 		initTable();
+		initCheckBox();
+		
+		btnRefresh.setOnAction(new EventHandler<ActionEvent>() {
+			@Override public void handle(ActionEvent e) {
+				tablGroup.getColumns().clear();
+				tablGroup.getItems().clear();
+				initTable();
+				fillTable(((Group) chbGroups.getValue()).getName());
+			}
+		});
 		
 		btnInfo.setOnAction(new EventHandler<ActionEvent>() {
 			@Override public void handle(ActionEvent e) {
@@ -677,8 +770,12 @@ public class mainWinController {
 			}
 		});
 
-		
-		
+		btnRefreshGroups.setOnAction(new EventHandler<ActionEvent>() {
+			@Override public void handle(ActionEvent e) {
+				fillChoiceBoxes();
+			}
+		});
+
 		btnCreateGroup.setOnAction(new EventHandler<ActionEvent>() {
 			@Override public void handle(ActionEvent e) {
 				createGroupBtnAction();
@@ -709,6 +806,18 @@ public class mainWinController {
 			}
 		});
 
+		btnChooseBd.setOnAction(new EventHandler<ActionEvent>() {
+			@Override public void handle(ActionEvent e) {
+				chooseNewDb();
+			}
+		});
+	
+		btnCreateBd.setOnAction(new EventHandler<ActionEvent>() {
+			@Override public void handle(ActionEvent e) {
+				createNewDb();
+			}
+		});
+	
 	}
 
 

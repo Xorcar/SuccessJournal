@@ -68,19 +68,27 @@ public class Student {
 			querryGroupPart = " AND g.name = '" + curGroupName + "'";
 		}
 		
-		String querry1 = "SELECT AVG(v.mark), COUNT(v.visitingId) "
+		String querry1 = "SELECT COUNT(v.visitingId) "
 				+ "FROM Students AS s INNER JOIN Groups AS g ON "
 				+ "s.groupId = g.groupId INNER JOIN Visitings as v ON v.studentId = s.studentId "
 				+ "WHERE s.name = '" + studentName + "' AND s.birthdate IN (SELECT s2.birthdate "
-				+ "FROM Students AS s2 INNER JOIN Groups AS g2 on s2.groupId = g2.groupId AND g2.name = '"
+				+ "FROM Students AS s2 INNER JOIN Groups AS g2 ON s2.groupId = g2.groupId AND g2.name = '"
 				+ mainGroupName + "')" + querryGroupPart;
+		
+		
 		
 		String querry2 = "SELECT COUNT(v.visitingId) FROM Students AS s INNER JOIN Groups AS g ON "
 				+ "s.groupId = g.groupId INNER JOIN Visitings as v ON v.studentId = s.studentId "
 				+ "WHERE s.name = '" + studentName + "' AND s.birthdate IN (SELECT s2.birthdate "
-				+ "FROM Students AS s2 INNER JOIN Groups AS g2 on s2.groupId = g2.groupId AND g2.name = '"
+				+ "FROM Students AS s2 INNER JOIN Groups AS g2 ON s2.groupId = g2.groupId AND g2.name = '"
 				+ mainGroupName + "') AND v.presence != 0" + querryGroupPart;
 		
+		String querry3 = "SELECT AVG(v.mark)"
+				+ "FROM Students AS s INNER JOIN Groups AS g ON "
+				+ "s.groupId = g.groupId INNER JOIN Visitings as v ON v.studentId = s.studentId "
+				+ "WHERE s.name = '" + studentName + "' AND s.birthdate IN (SELECT s2.birthdate "
+				+ "FROM Students AS s2 INNER JOIN Groups AS g2 ON s2.groupId = g2.groupId AND g2.name = '"
+				+ mainGroupName + "') AND v.mark != 0" + querryGroupPart;
 		
 		if (dates != "")
 		{
@@ -97,18 +105,20 @@ public class Student {
 		DB db = DB.conn();
 		List<String> strList1 = db.select(querry1);
 		List<String> strList2 = db.select(querry2);
+		List<String> strList3 = db.select(querry3);
 		
 		for(String str : strList1)
 		{
 			String[] split1 = str.split("\n");
 			String[] split2 = strList2.get(0).split("\n");
+			String[] split3 = strList3.get(0).split("\n");
 
-			list.add(split1[0]);
+			list.add(split3[0]);
 			////////////
-			Integer.parseInt(split1[1]);
+			Integer.parseInt(split1[0]);
 			Integer.parseInt(split2[0]);
 			//////////////TODO DELETE /\
-			list.add("" + (Integer.parseInt(split1[1]) - Integer.parseInt(split2[0])));
+			list.add("" + (Integer.parseInt(split1[0]) - Integer.parseInt(split2[0])));
 			list.add(split2[0]);
 		}
 		
@@ -121,7 +131,7 @@ public class Student {
 
 		String querry = "SELECT s.name, birthdate, ismale FROM Students AS s, Groups AS g WHERE "
 				+ "g.name = '" + groupName
-				+ "' AND s.groupid = g.groupid;";
+				+ "' AND s.groupid = g.groupid ORDER BY s.name;";
 
 		DB db = DB.conn();
 		List<String> strList = db.select(querry);

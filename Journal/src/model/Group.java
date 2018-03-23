@@ -155,6 +155,22 @@ public class Group {
 		return groupNames;
 	}
 	
+	public static List<String> getDates(String groupName)
+	{
+		List<String> dates = new LinkedList<String>();
+		String querry = "SELECT v.date FROM Groups AS g "
+				+ "INNER JOIN Visitings AS v ON g.groupId = v.groupId WHERE g.name = '"
+				+ groupName + "' GROUP BY v.date;";
+		
+		DB db = DB.conn();
+		List<String> strList = db.select(querry);
+		for(String str : strList)
+		{
+			dates.add(str.split("\n")[0]);
+		}
+		return dates;
+	}
+	
 	/**
 	 * Method transform text representation of days of work into util.List of time.DaysOfWeek
 	 * @param str - String, containing numbers of days of week, separeted by " ". Ex: "1 3 4 7".
@@ -166,11 +182,7 @@ public class Group {
 		splittedStr = Arrays.asList(str.split(" "));
 		
 		List<DayOfWeek> daysOfWeek = new LinkedList<DayOfWeek>();
-		
-		/*if(splittedStr.isEmpty())
-		{
-			return daysOfWeek;
-		}*/
+
 		for(String s : splittedStr)
 		{
 			if(s.matches("-?\\d+")){ // any positive or negetive integer or not!

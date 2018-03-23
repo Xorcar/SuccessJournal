@@ -101,6 +101,9 @@ public class StudentInfoWinController {
 				//TODO fill action for choice box ///fillTable(((Group) chbGroupsCon.getItems().get((Integer) number2)).getName());
 			}
 		});
+		
+		choGroup.getSelectionModel().select(0);
+		
 	}
 	
 	private void initCheckBox()
@@ -129,11 +132,10 @@ public class StudentInfoWinController {
 		mainGroupName = data[0];
 		studentName = data[1];
 		initLabels();
-		initCheckBox();
-		
-		initChoiceBox();
 		dteFrom.setValue(LocalDate.now().minusMonths(1));
 		dteTo.setValue(LocalDate.now());
+		initChoiceBox();
+		initCheckBox();
 		
 		btnShow.setOnAction(new EventHandler<ActionEvent>() {
 			@Override public void handle(ActionEvent e) {

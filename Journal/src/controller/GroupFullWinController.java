@@ -1,5 +1,7 @@
 package controller;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -8,17 +10,27 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import application.Main;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
+import model.Group;
 import model.Student;
 import model.TableDat;
 import model.Visiting;
@@ -35,28 +47,28 @@ public class GroupFullWinController {
 	@FXML
 	private CheckBox cheAll;
 	@FXML
+	private Button btnRefresh;
+	@FXML
 	private Button btnEdit;
 	
 	private String groupName;
 	
-	private void initTable()
+	private void clearTable()
 	{
-		/*TableView<Row> tableView = new TableView<>();
-
-        List<Row> rows = makeSampleData();
-
-        int max = getMaxCells(rows);
-        makeColumns(max, tableView);
-        tableView.getItems().addAll(rows);*/
-
-        // Boilerplate code for showing the TableView
-        //Scene scene = new Scene(tableView, 1000, 1000);
-        //primaryStage.setScene(scene);
-        //primaryStage.show();
+		tblJournal.getColumns().clear();
+		tblJournal.getItems().clear();
 	}
 	
-	private void fillTable(LocalDate from, LocalDate to, String groupName)
+	private void fillTable(String groupName)
 	{
+		LocalDate from = LocalDate.parse("0000-01-01");
+		LocalDate to = LocalDate.parse("9999-01-01");
+		if(!cheAll.isSelected())
+		{
+			from = dteFrom.getValue();
+			to = dteTo.getValue();
+		}
+		
 		ObservableList<List<String>> dataList = Visiting.getAllVisitings(groupName, from.toString(), to.toString());
 
         TableColumn<List<String>, String> columnNum = new TableColumn<>("№");
@@ -105,16 +117,83 @@ public class GroupFullWinController {
         tblJournal.setItems(dataList);
 	}
 
+	private void initCheckBox()
+	{
+		cheAll.selectedProperty().addListener((ChangeListener<? super Boolean>) new ChangeListener<Boolean>() {
+	        public void changed(ObservableValue<? extends Boolean> ov,
+	                Boolean old_val, Boolean new_val) {
+	        			if(new_val == false)
+	        			{
+	        				dteFrom.setDisable(false);
+	        				dteTo.setDisable(false);
+	        			}
+	        			else
+	        			{
+	        				dteFrom.setDisable(true);
+	        				dteTo.setDisable(true);
+	        			}
+	            }
+	        });
+	}
 	
+	private void initDatePickers()
+	{
+		if(LocalDate.now().getMonthValue() <= 6)
+		{
+			dteFrom.setValue(LocalDate.of(LocalDate.now().getYear(), 1, 1));
+			dteTo.setValue(LocalDate.of(LocalDate.now().getYear(), 6, 30));
+		}
+		else
+		{
+			dteFrom.setValue(LocalDate.of(LocalDate.now().getYear(), 7, 1));
+			dteTo.setValue(LocalDate.of(LocalDate.now().getYear(), 12, 31));
+		}
+	}
+	
+	private void openGroupEditDayWindow()
+	{
+		//TODO end
+		System.out.println("Open new editing window: info about group " +
+				groupName + " at date "  );
+		
+		mainWinController.betweenWindowsData = groupName;
+		
+        try {
+
+			VBox root = (VBox) FXMLLoader.load(getClass().getResource("/view/GroupEditDayWindow.fxml"));
+			
+			Scene scene = new Scene(root);
+			Stage stage = new Stage();
+			stage.setScene(scene);
+			stage.setTitle("Редагування для групи " + groupName);
+			stage.show();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+	}
 	
 	@FXML
 	private void initialize() 
 	{
-        System.out.println("Initialize of group full window started");
 		groupName = mainWinController.betweenWindowsData;
-		//initTable();
-		fillTable(LocalDate.parse("0000-01-01"), LocalDate.parse("9999-01-01"), groupName);
-        System.out.println("Initialize of group full window finished");
+		initCheckBox();
+		initDatePickers();
+		
+		fillTable(groupName);
+		
+		btnRefresh.setOnAction(new EventHandler<ActionEvent>() {
+			@Override public void handle(ActionEvent e) {
+				clearTable();
+				fillTable(groupName);
+			}
+		});
+		
+		btnEdit.setOnAction(new EventHandler<ActionEvent>() {
+			@Override public void handle(ActionEvent e) {
+				openGroupEditDayWindow();
+			}
+		});
 	}
 	
 }

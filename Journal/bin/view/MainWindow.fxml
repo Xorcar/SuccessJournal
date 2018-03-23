@@ -20,11 +20,13 @@
                                  <children>
                                     <Label text="Група" />
                                     <ChoiceBox fx:id="chbGroups" prefWidth="150.0" />
+                                    <CheckBox fx:id="cheGroups" mnemonicParsing="false" text="Не по графіку" />
                                  </children>
                               </HBox>
-                              <TableView fx:id="tablGroup" prefHeight="200.0" prefWidth="200.0" />
+                              <TableView fx:id="tablGroup" maxWidth="261.0" />
                               <HBox prefHeight="100.0" prefWidth="200.0">
                                  <children>
+                                    <Button fx:id="btnRefresh" mnemonicParsing="false" text="Оновити" />
                                     <Button fx:id="btnInfo" mnemonicParsing="false" text="Інформація про учня" />
                                     <Button fx:id="btnSave" mnemonicParsing="false" text="Зберегти зміни" />
                                     <Button fx:id="btnFullJournal" mnemonicParsing="false" text="Повний журнал" />
@@ -46,6 +48,7 @@
                                  <children>
                                     <Label text="Виберіть групу:" />
                                     <ChoiceBox fx:id="chbGroupsCon" prefWidth="150.0" />
+                                    <Button fx:id="btnRefreshGroups" mnemonicParsing="false" text="Оновити" />
                                     <Button fx:id="btnCreateGroup" mnemonicParsing="false" text="Створити групу" />
                                  </children>
                               </HBox>
@@ -99,9 +102,9 @@
                                           <HBox prefHeight="43.0" prefWidth="505.0">
                                              <children>
                                                 <Label text="Період навчання, з" />
-                                                <DatePicker fx:id="dteGroupFrom" prefHeight="31.0" prefWidth="131.0" />
+                                                <DatePicker fx:id="dteGroupFrom" editable="false" prefHeight="31.0" prefWidth="131.0" />
                                                 <Label text=" по " />
-                                                <DatePicker fx:id="dteGroupTo" prefHeight="31.0" prefWidth="152.0" />
+                                                <DatePicker fx:id="dteGroupTo" editable="false" prefHeight="31.0" prefWidth="152.0" />
                                              </children>
                                           </HBox>
                                           <Button fx:id="btnGroupDaysSave" mnemonicParsing="false" text="Зберегти" />
@@ -114,11 +117,22 @@
                      </children></AnchorPane>
             </content>
           </Tab>
-            <Tab text="Untitled Tab">
+            <Tab text="Управління БД">
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <TitledPane layoutX="266.0" layoutY="117.0" prefHeight="200.0" prefWidth="200.0" />
+                        <VBox layoutX="202.0" layoutY="107.0" prefHeight="488.0" prefWidth="531.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <children>
+                              <HBox prefHeight="46.0" prefWidth="531.0">
+                                 <children>
+                                    <Label text="Робоча база даних:" />
+                                    <TextField fx:id="txtfBdPath" editable="false" prefHeight="31.0" prefWidth="265.0" />
+                                 </children>
+                              </HBox>
+                              <Button fx:id="btnChooseBd" mnemonicParsing="false" text="Вибрати файл бази даних" />
+                              <Button fx:id="btnCreateBd" mnemonicParsing="false" text="Створити порожній файл бази даних" />
+                           </children>
+                        </VBox>
                      </children>
                   </AnchorPane>
               </content>

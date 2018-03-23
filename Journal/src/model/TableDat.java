@@ -30,7 +30,7 @@ public class TableDat {
 	}
 	
  	public String getNum() {
-		return "" + num + 1;
+		return "" + num;
 	}
 
 	public void setNum(int num) {
