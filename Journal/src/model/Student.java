@@ -97,9 +97,12 @@ public class Student {
 					+ splittedDates[1] + "'";
 			querry2 += " AND v.date >= '" + splittedDates[0] + "' AND v.date <= '"
 					+ splittedDates[1] + "'";
+			querry3 += " AND v.date >= '" + splittedDates[0] + "' AND v.date <= '"
+				+ splittedDates[1] + "'";
 		}
 		querry1 += ";";
 		querry2 += ";";
+		querry3 += ";";
 		
 		
 		DB db = DB.conn();
@@ -118,8 +121,8 @@ public class Student {
 			Integer.parseInt(split1[0]);
 			Integer.parseInt(split2[0]);
 			//////////////TODO DELETE /\
-			list.add("" + (Integer.parseInt(split1[0]) - Integer.parseInt(split2[0])));
 			list.add(split2[0]);
+			list.add("" + (Integer.parseInt(split1[0]) - Integer.parseInt(split2[0])));
 		}
 		
 		return list;
@@ -186,9 +189,9 @@ public class Student {
 	
 	public static void delete(String studentName, String groupName)
 	{
-		String querry = "DELETE FROM Students WHERE groupid = "
-				+ "(SELECT FROM Groups WHERE name = '" + groupName
-				+ "'), name = '" + studentName + "';";
+		String querry = "DELETE FROM Students WHERE groupid IN "
+				+ "(SELECT g.groupid FROM Groups AS g WHERE g.name = '" + groupName
+				+ "') AND name = '" + studentName + "';";
 
 		DB db = DB.conn();
 		

@@ -5,14 +5,10 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox prefHeight="294.0" prefWidth="476.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.GroupFullWinController">
+<VBox prefHeight="305.0" prefWidth="523.0" styleClass="VBox" stylesheets="@style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.GroupFullWinController">
    <children>
-      <ScrollPane prefHeight="200.0" prefWidth="200.0">
-         <content>
-            <TableView fx:id="tblJournal" prefHeight="200.0" />
-         </content>
-      </ScrollPane>
-      <HBox prefHeight="100.0" prefWidth="200.0">
+      <TableView fx:id="tblJournal" prefHeight="200.0" />
+      <HBox prefHeight="42.0" prefWidth="513.0" styleClass="HBox">
          <children>
             <Label text="З " />
             <DatePicker fx:id="dteFrom" editable="false" prefHeight="31.0" prefWidth="128.0" />
@@ -22,6 +18,11 @@
             <Button fx:id="btnRefresh" mnemonicParsing="false" text="Оновити" />
          </children>
       </HBox>
-      <Button fx:id="btnEdit" mnemonicParsing="false" text="Редагувати" />
+      <HBox prefHeight="46.0" prefWidth="513.0" styleClass="HBox">
+         <children>
+            <Button fx:id="btnInfo" mnemonicParsing="false" text="Інформація про учня" />
+            <Button fx:id="btnEdit" mnemonicParsing="false" text="Редагувати" />
+         </children>
+      </HBox>
    </children>
 </VBox>

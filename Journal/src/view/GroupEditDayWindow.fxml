@@ -5,19 +5,20 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox prefHeight="314.0" prefWidth="276.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.GroupEditDayWinController">
+<VBox prefHeight="478.0" prefWidth="348.0" styleClass="VBox" stylesheets="@style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.GroupEditDayWinController">
    <children>
-      <TableView fx:id="tablGroup" prefHeight="200.0" prefWidth="200.0" />
+      <TableView fx:id="tablGroup" maxWidth="275.0" />
       <Button fx:id="btnRefresh" mnemonicParsing="false" text="Оновити" />
       <Button fx:id="btnInfo" mnemonicParsing="false" text="Інформація про учня" />
-      <Button fx:id="btnSave" mnemonicParsing="false" text="Зберегти зміни" />
-      <HBox prefHeight="37.0" prefWidth="276.0">
+      <Button fx:id="btnSave" mnemonicParsing="false" styleClass="button-db" text="Зберегти зміни" />
+      <Button fx:id="btnDelete" mnemonicParsing="false" styleClass="button-db" text="Видалити день" />
+      <HBox prefHeight="37.0" prefWidth="276.0" styleClass="HBox">
          <children>
             <Label text="За день" />
             <ChoiceBox fx:id="chbDate" prefWidth="150.0" />
          </children>
       </HBox>
-      <HBox prefHeight="47.0" prefWidth="276.0">
+      <HBox prefHeight="47.0" prefWidth="276.0" styleClass="HBox">
          <children>
             <CheckBox fx:id="cheIfNewDate" mnemonicParsing="false" text="Новий запис" />
             <DatePicker fx:id="dteNewDate" disable="true" editable="false" prefHeight="31.0" prefWidth="129.0" />

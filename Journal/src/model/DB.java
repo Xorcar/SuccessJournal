@@ -236,11 +236,11 @@ public class DB {
 			}
 		}
 		
-		System.out.println("data from SELECT:");
+		/*System.out.println("data from SELECT:");
 		for(String s : list)
 		{
 			System.out.println("\"" + s + "\"");
-		}
+		}*/
 		
 		return list;
 	}

@@ -1,68 +1,94 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.chart.*?>
 <?import javafx.scene.control.*?>
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox prefHeight="273.0" prefWidth="305.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.StudentInfoWinController">
+<HBox styleClass="HBox" stylesheets="@style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.StudentInfoWinController">
    <children>
-      <GridPane>
-        <columnConstraints>
-          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-        </columnConstraints>
-        <rowConstraints>
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-        </rowConstraints>
+      <VBox prefHeight="470.0" prefWidth="314.0" styleClass="VBox">
          <children>
-            <Label text="Ім'я" />
-            <Label text="День народження" GridPane.rowIndex="1" />
-            <Label text="Вік" GridPane.rowIndex="2" />
-            <Label text="Стать" GridPane.rowIndex="3" />
-            <Label fx:id="labName" text="-" GridPane.columnIndex="1" />
-            <Label fx:id="labBirthdate" text="-" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-            <Label fx:id="labAge" text="-" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-            <Label fx:id="labSex" text="-" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <GridPane styleClass="GridPane">
+              <columnConstraints>
+                <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <Label text="Ім'я" />
+                  <Label text="День народження" GridPane.rowIndex="1" />
+                  <Label text="Вік" GridPane.rowIndex="2" />
+                  <Label text="Стать" GridPane.rowIndex="3" />
+                  <Label fx:id="labName" text="-" GridPane.columnIndex="1" />
+                  <Label fx:id="labBirthdate" text="-" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                  <Label fx:id="labAge" text="-" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                  <Label fx:id="labSex" text="-" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+               </children>
+            </GridPane>
+            <HBox prefHeight="38.0" prefWidth="305.0" styleClass="HBox">
+               <children>
+                  <Label text="В групі: " />
+                  <ChoiceBox fx:id="choGroup" prefWidth="150.0" />
+               </children>
+            </HBox>
+            <GridPane styleClass="GridPane">
+               <children>
+                  <Label text="Середня оцінка:" />
+                  <Label text="Присутностей:" GridPane.rowIndex="1" />
+                  <Label text="Відсутностей:" GridPane.rowIndex="2" />
+                  <Label fx:id="labAvgMark" text="-" GridPane.columnIndex="1" />
+                  <Label fx:id="labPres" text="-" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                  <Label fx:id="labAbs" text="-" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+               </children>
+               <columnConstraints>
+                  <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+               </rowConstraints>
+            </GridPane>
+            <CheckBox fx:id="cheAllTime" mnemonicParsing="false" text="По всьому періоду навчання" />
+            <HBox prefHeight="39.0" prefWidth="305.0" styleClass="HBox">
+               <children>
+                  <Label text="З" />
+                  <DatePicker fx:id="dteFrom" editable="false" prefHeight="31.0" prefWidth="132.0" />
+                  <Label text="по" />
+                  <DatePicker fx:id="dteTo" editable="false" prefHeight="31.0" prefWidth="111.0" />
+               </children>
+            </HBox>
+            <Button fx:id="btnShow" mnemonicParsing="false" text="Показати" />
          </children>
-      </GridPane>
-      <HBox prefHeight="38.0" prefWidth="305.0">
+      </VBox>
+      <VBox prefHeight="470.0" prefWidth="287.0" styleClass="VBox">
          <children>
-            <Label text="В групі: " />
-            <ChoiceBox fx:id="choGroup" prefWidth="150.0" />
+            <LineChart fx:id="chrtMark">
+              <xAxis>
+                <CategoryAxis side="BOTTOM" />
+              </xAxis>
+              <yAxis>
+                <NumberAxis side="LEFT" />
+              </yAxis>
+            </LineChart>
+            <StackedBarChart fx:id="chrtPresenceAll">
+              <xAxis>
+                <CategoryAxis side="BOTTOM" />
+              </xAxis>
+              <yAxis>
+                <NumberAxis side="LEFT" />
+              </yAxis>
+            </StackedBarChart>
+            <PieChart fx:id="chrtPresence" />
          </children>
-      </HBox>
-      <GridPane>
-         <children>
-            <Label text="Середня оцінка:" />
-            <Label text="Присутностей:" GridPane.rowIndex="1" />
-            <Label text="Відсутностей:" GridPane.rowIndex="2" />
-            <Label fx:id="labAvgMark" text="-" GridPane.columnIndex="1" />
-            <Label fx:id="labPres" text="-" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-            <Label fx:id="labAbs" text="-" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-         </children>
-         <columnConstraints>
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-         </columnConstraints>
-         <rowConstraints>
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-         </rowConstraints>
-      </GridPane>
-      <CheckBox fx:id="cheAllTime" mnemonicParsing="false" text="По всьому періоду навчання" />
-      <HBox prefHeight="39.0" prefWidth="305.0">
-         <children>
-            <Label text="З" />
-            <DatePicker fx:id="dteFrom" editable="false" prefHeight="31.0" prefWidth="132.0" />
-            <Label text="по" />
-            <DatePicker fx:id="dteTo" editable="false" prefHeight="31.0" prefWidth="111.0" />
-         </children>
-      </HBox>
-      <Button fx:id="btnShow" mnemonicParsing="false" text="Показати" />
+      </VBox>
    </children>
-</VBox>
+</HBox>

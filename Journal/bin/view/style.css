@@ -1,0 +1,57 @@
+/* JavaFX CSS - Leave this comment until you have at least create one rule which uses -fx-Property */
+
+.root{
+	-fx-font-family: 'Open Sans', Sans, sans-serif; 
+}
+
+.button-db {
+    -fx-background-color: -fx-outer-border, rgb(163,206,220), rgb(173,216,230);
+    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );
+    -fx-effect: dropshadow(two-pass-box , -fx-shadow-highlight-color, 1, 0.0 , 0, 1.4);
+    -fx-background-insets: -0.2, 1, 2, -1.4, 2.6;
+    
+    
+}
+.button-db:hover {
+    -fx-background-color: -fx-outer-border, rgb(163,206,220), rgb(183,226,240);
+}
+.button-db:focused{
+	-fx-background-color: -fx-focus-color, -fx-inner-border, -fx-body-color, -fx-faint-focus-color, rgb(173,216,230);
+    -fx-background-insets: -0.2, 1, 2, -1.4, 2.6;
+    -fx-background-radius: 3, 2, 1, 4, 1;
+}
+.button-db:armed {
+    -fx-color: rgb(0,191,255);
+}
+/*.button-db{
+	-fx-background-color: rgb(173,216,230);
+
+}
+.button-db:hover{
+	-fx-background-color: ;
+
+}
+.button-db:armed {
+    -fx-color: -fx-pressed-base;
+}*/
+
+.VBox{
+	-fx-padding: 5 5 5 5;
+	-fx-spacing: 5;
+	-fx-alignment: center;
+	-fx-fill-width: true;
+}
+.HBox{
+	-fx-padding: 5 5 5 5;
+	-fx-spacing: 5;
+	-fx-alignment: center;
+}
+.GridPane{
+	-fx-padding: 5 5 5 5;
+	-fx-spacing: 5;
+	-fx-alignment: center;
+	-fx-hgap: 5;
+	-fx-vgap: 5;
+	-fx-border-color: BLACK;
+    -fx-border-width: 1px;
+}
