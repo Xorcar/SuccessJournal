@@ -1,10 +1,12 @@
 package controller;
 
+import java.awt.Desktop;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.time.DayOfWeek;
@@ -779,39 +781,60 @@ public class mainWinController
 
     private void callInfoWindow()
     {
-	// TODO finish
-	// Create the custom dialog.
 	Dialog<Void> dialog = new Dialog<>();
 	dialog.setTitle("Про програму");
 	dialog.setHeaderText("Журнал для Центру Успіх, v1.0");
 
-	dialog.getDialogPane().getButtonTypes().add(ButtonType.OK);
+	dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
 
 	VBox vbox = new VBox();
 	vbox.getChildren().add(new Label("Розроблено для"));
-	vbox.getChildren().add(new Label("християнського навчального центру \"Успіх\""));
-	vbox.getChildren().add(new Label("Миколюком Юрієм."));
-	vbox.getChildren().add(new Label("Версія 1.0"));
-
-	final WebView browser = new WebView();
-	final WebEngine webEngine = browser.getEngine();
-	final Hyperlink hp = new Hyperlink("Github проекту: " + "https://github.com/Xorcar/SuccessJournal");
-	hp.setOnAction(new EventHandler<ActionEvent>()
+	vbox.getChildren().add(new Label("Християнського навчального центру \"Успіх\""));
+	final Hyperlink hpSuccess = new Hyperlink("https://center-uspikh.com.ua/");
+	hpSuccess.setOnAction(new EventHandler<ActionEvent>()
 	{
 	    @Override
 	    public void handle(ActionEvent e)
 	    {
-		webEngine.load("https://github.com/Xorcar/SuccessJournal");
+		Desktop d = Desktop.getDesktop();
+		try
+		{
+		    d.browse(new URI("https://center-uspikh.com.ua/"));
+		} catch (IOException | URISyntaxException e1)
+		{
+		    e1.printStackTrace();
+		}
 	    }
 	});
+	vbox.getChildren().add(hpSuccess);
+	vbox.getChildren().add(new Label("Миколюком Юрієм."));
+	vbox.getChildren().add(new Label("Версія 1.0."));
 
-	vbox.getChildren().add(hp);
+	final Hyperlink hpGithub = new Hyperlink("https://github.com/Xorcar/SuccessJournal");
+	hpGithub.setOnAction(new EventHandler<ActionEvent>()
+	{
+	    @Override
+	    public void handle(ActionEvent e)
+	    {
+		Desktop d = Desktop.getDesktop();
+		try
+		{
+		    d.browse(new URI("https://github.com/Xorcar/SuccessJournal"));
+		} catch (IOException | URISyntaxException e1)
+		{
+		    e1.printStackTrace();
+		}
+	    }
+	});
+	HBox hboxGit = new HBox();
+	hboxGit.getChildren().addAll(new Label("Github проекту: "), hpGithub);
 
-	Image image = 
-	    new Image(this.getClass().getResourceAsStream("/view/githubQr.png"));
+	vbox.getChildren().add(hboxGit);
+	vbox.getStyleClass().add("HBox");
+
+	Image image = new Image(this.getClass().getResourceAsStream("/view/githubQr.png"));
 	ImageView imageView = new ImageView(image);
-	final Hyperlink hp2 = new Hyperlink("", imageView);
-	vbox.getChildren().add(hp2);
+	vbox.getChildren().add(imageView);
 
 	vbox.getStylesheets().add("/view/style.css");
 	vbox.getStyleClass().add("VBox");

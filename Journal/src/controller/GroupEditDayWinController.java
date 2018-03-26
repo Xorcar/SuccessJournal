@@ -54,7 +54,7 @@ public class GroupEditDayWinController
     private Button btnSave;
     @FXML
     private Button btnDelete;
-    
+
     @FXML
     private ChoiceBox<String> chbDate;
     @FXML
@@ -100,7 +100,7 @@ public class GroupEditDayWinController
 	tablGroup = new TableView<TableDat>();
 
 	table.setPlaceholder(new Label("Виберіть день"));
-	
+
 	TableColumn<TableDat, String> colNum = new TableColumn<TableDat, String>("№");
 	TableColumn<TableDat, String> colName = new TableColumn<TableDat, String>("Ім'я");
 	TableColumn<TableDat, String> colDate = new TableColumn<TableDat, String>("0000-00-00");
@@ -171,7 +171,7 @@ public class GroupEditDayWinController
 	colName.setPrefWidth(140);
 	colMark.setPrefWidth(50);
 	colPres.setPrefWidth(40);
-	
+
 	colDate.getColumns().addAll(colMark, colPres);
 	table.getColumns().addAll(colNum, colName, colDate);
 
@@ -227,7 +227,7 @@ public class GroupEditDayWinController
     {
 	Visiting.deleteDay(groupName, getDate());
     }
-    
+
     private LocalDate getDate()
     {
 	LocalDate dateToReturn = LocalDate.now();
@@ -300,7 +300,7 @@ public class GroupEditDayWinController
 	initTable();
 	initCheckBox();
 	initDatePicker();
-	
+
 	btnRefresh.setOnAction(new EventHandler<ActionEvent>()
 	{
 	    @Override

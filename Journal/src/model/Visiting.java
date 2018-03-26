@@ -34,7 +34,7 @@ public class Visiting
 
 	super();
 	this.presence = (strpresence == "1");
-	if(strmark.equals("null"))
+	if (strmark.equals("null"))
 	{
 	    strmark = "0";
 	}
@@ -107,12 +107,9 @@ public class Visiting
 	    mainList.add(l);
 	}
 
-	String querry = "SELECT s.name, v.date, v.mark, v.presence "
-		+ "FROM Visitings AS v INNER JOIN Groups AS g "
-		+ "ON v.groupId = g.groupId LEFT JOIN Students AS s "
-		+ "ON s.studentId = v.studentId WHERE g.name = '"
-		+ groupName + "' AND ((v.date >= '" + dateFrom 
-		+ "' AND v.date <= '" + dateTo
+	String querry = "SELECT s.name, v.date, v.mark, v.presence " + "FROM Visitings AS v INNER JOIN Groups AS g "
+		+ "ON v.groupId = g.groupId LEFT JOIN Students AS s " + "ON s.studentId = v.studentId WHERE g.name = '"
+		+ groupName + "' AND ((v.date >= '" + dateFrom + "' AND v.date <= '" + dateTo
 		+ "') OR v.date IS NULL) ORDER BY s.name, v.date;";
 
 	DB db = DB.conn();
@@ -146,30 +143,27 @@ public class Visiting
 	return mainList;
     }
 
-    public static List<Visiting> getVisitingsOfStudent(String groupName, String studentName, String dateFrom, String dateTo)
+    public static List<Visiting> getVisitingsOfStudent(String groupName, String studentName, String dateFrom,
+	    String dateTo)
+    {
+	List<Visiting> visits = new LinkedList<>();
+	String querry = "SELECT v.presence, v.mark, v.date " + "FROM Visitings AS v INNER JOIN Groups AS g "
+		+ "ON v.groupId = g.groupId INNER JOIN Students AS s " + "ON s.studentId = v.studentId AND s.name = '"
+		+ studentName + "' WHERE g.name = '" + groupName + "' AND (v.date >= '" + dateFrom + "' AND v.date <= '"
+		+ dateTo + "') ORDER BY s.name, v.date;";
+
+	DB db = DB.conn();
+	List<String> strList = db.select(querry);
+
+	for (String str : strList)
 	{
-		List<Visiting> visits = new LinkedList<>();
-		String querry = "SELECT v.presence, v.mark, v.date "
-			+ "FROM Visitings AS v INNER JOIN Groups AS g "
-			+ "ON v.groupId = g.groupId INNER JOIN Students AS s "
-			+ "ON s.studentId = v.studentId AND s.name = '"
-			+ studentName + "' WHERE g.name = '"
-			+ groupName + "' AND (v.date >= '" + dateFrom 
-			+ "' AND v.date <= '" + dateTo
-			+ "') ORDER BY s.name, v.date;";
 
-		DB db = DB.conn();
-		List<String> strList = db.select(querry);
-
-		for(String str : strList)
-		{
-		    
-		    String[] split = str.split("\n");
-		    visits.add(new Visiting(split[0], split[1], split[2]));
-		}
-		
-		return visits;
+	    String[] split = str.split("\n");
+	    visits.add(new Visiting(split[0], split[1], split[2]));
 	}
+
+	return visits;
+    }
 
     /**
      * Method for getting list of days, recorded in DB of some group. Like, in what
@@ -236,10 +230,9 @@ public class Visiting
 
 	String querry = "INSERT INTO Visitings (groupid, studentid, mark, presence, date) VALUES ("
 		+ "(SELECT groupid FROM Groups WHERE name = '" + groupName + "'), "
-		+ "(SELECT studentid FROM Students WHERE name = '"
-		+ studentName + "' AND groupid IN (SELECT groupid FROM Groups WHERE name = '"
-		+ groupName + "')), " + (mark == 0 ? "null" : mark)
-		+ ", " + (presence ? 1 : 0) + ", '" + date.toString() + "');";
+		+ "(SELECT studentid FROM Students WHERE name = '" + studentName
+		+ "' AND groupid IN (SELECT groupid FROM Groups WHERE name = '" + groupName + "')), "
+		+ (mark == 0 ? "null" : mark) + ", " + (presence ? 1 : 0) + ", '" + date.toString() + "');";
 	DB db = DB.conn();
 	db.executeUpdate(querry);
     }

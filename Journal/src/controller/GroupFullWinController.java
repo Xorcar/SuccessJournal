@@ -82,14 +82,14 @@ public class GroupFullWinController
 	columnName.setCellValueFactory(param -> {
 	    return new SimpleStringProperty(param.getValue().get(1));
 	});
-	
+
 	columnNum.setPrefWidth(30);
 	columnName.setPrefWidth(140);
-	
+
 	tblJournal.getColumns().addAll(columnNum, columnName);
 
 	TableView<List<String>> table = tblJournal;
-	//table.setEditable(true);
+	// table.setEditable(true);
 
 	if (dataList.size() >= 1)
 	{
@@ -101,7 +101,7 @@ public class GroupFullWinController
 
 		columnM.setPrefWidth(50);
 		columnP.setPrefWidth(40);
-		
+
 		column.getColumns().addAll(columnM, columnP);
 		table.getColumns().add(column);
 		columnM.setCellValueFactory(param -> {
@@ -120,14 +120,14 @@ public class GroupFullWinController
 
 	    }
 	}
-	
+
 	TableColumn<List<String>, String> columnAvg = new TableColumn<>("Сер");
 	columnAvg.setPrefWidth(40);
 	TableColumn<List<String>, String> columnTotPres = new TableColumn<>("П/В");
 	columnTotPres.setPrefWidth(40);
-	
+
 	columnAvg.setCellValueFactory(param -> {
-	    int index = (table.getColumns().size() - 4) * 3 + 2; 
+	    int index = (table.getColumns().size() - 4) * 3 + 2;
 	    String cellStr = param.getValue().get(index);
 	    return new SimpleStringProperty(cellStr);
 	});
@@ -137,7 +137,7 @@ public class GroupFullWinController
 	    return new SimpleStringProperty(cellStr);
 	});
 	table.getColumns().addAll(columnAvg, columnTotPres);
-	
+
 	tblJournal = table;
 	tblJournal.setItems(dataList);
     }
@@ -172,7 +172,7 @@ public class GroupFullWinController
 	    dteFrom.setValue(LocalDate.of(LocalDate.now().getYear(), 7, 1));
 	    dteTo.setValue(LocalDate.of(LocalDate.now().getYear(), 12, 31));
 	}
-	
+
 	dteFrom.setOnAction(new EventHandler<ActionEvent>()
 	{
 	    @Override

@@ -147,138 +147,125 @@ public class StudentInfoWinController
     private void initCharts()
     {
 	List<List<Visiting>> allVisits = new LinkedList<>();
-	
+
 	String dateFrom = "0000-01-01";
 	String dateTo = "9999-01-01";
-	if(!cheAllTime.isSelected())
+	if (!cheAllTime.isSelected())
 	{
 	    dateFrom = dteFrom.getValue().toString();
 	    dateTo = dteTo.getValue().toString();
 	}
-	
-	
-	if(choGroup.getValue().equals("<Всі>"))
+
+	if (choGroup.getValue().equals("<Всі>"))
 	{
-	    for(int i = 1; i < choGroup.getItems().size(); i++)
+	    for (int i = 1; i < choGroup.getItems().size(); i++)
 	    {
-		allVisits.add(Visiting.getVisitingsOfStudent(
-			(String) choGroup.getItems().get(i), studentName, dateFrom, dateTo));
+		allVisits.add(Visiting.getVisitingsOfStudent((String) choGroup.getItems().get(i), studentName, dateFrom,
+			dateTo));
 	    }
-	}
-	else
+	} else
 	{
-	    allVisits.add(Visiting.getVisitingsOfStudent(
-			(String) choGroup.getValue(), studentName, dateFrom, dateTo));
+	    allVisits.add(Visiting.getVisitingsOfStudent((String) choGroup.getValue(), studentName, dateFrom, dateTo));
 	}
-	
-        final LineChart<String,Number> lineChart = chrtMark;
 
-        lineChart.setAnimated(false);
-        lineChart.getXAxis().setLabel("Дата");
-        lineChart.getYAxis().setLabel("Оцінка");
-        lineChart.setTitle("Успішність");
-        List<Series<String, Number>> seriesList = new LinkedList<>();
-        for(List<Visiting> l : allVisits)
-        {
-            XYChart.Series<String, Number> series = new XYChart.Series<>();
-            for(Visiting v : l)
-            {
-        	series.getData().add(new XYChart.Data(v.getDate().toString(), v.getMark()));
-            }
-            if(choGroup.getValue().equals("<Всі>"))
-            {
-        	series.setName((String) choGroup.getItems().get(allVisits.indexOf(l) + 1));
-            }
-            else
-            {
-        	series.setName((String) choGroup.getValue());
-            }
-            seriesList.add(series);
-        }
-        lineChart.setData(FXCollections.observableList(seriesList));
-        
-        
-        if(choGroup.getValue().equals("<Всі>"))
-        {
-            VBox parent = (VBox) chrtMark.getParent();
-            if(!parent.getChildren().contains(chrtPresenceAll))
-            {
-        	parent.getChildren().add(chrtPresenceAll);
-            }
-            if(parent.getChildren().contains(chrtPresence))
-            {
-        	parent.getChildren().remove(chrtPresence);
-            }
-            
-            StackedBarChart<String, Number> sbc = chrtPresenceAll;
-            sbc.setTitle("Country Summary");
+	final LineChart<String, Number> lineChart = chrtMark;
 
-            String dates = "";
-            if(!cheAllTime.isSelected())
-       		{
-        	   dates = dateFrom + " " + dateTo;
-        	}
-            
-            final XYChart.Series<String, Number> seriesPres =
-                    new XYChart.Series<String, Number>();
-            final XYChart.Series<String, Number> seriesAbs =
-                    new XYChart.Series<String, Number>();
-            
-            seriesPres.setName("Присутність");
-            seriesAbs.setName("Відсутність");
-            for(int i = 1; i < choGroup.getItems().size(); i++)
-            {
-        	List<String> l = Student.getPresenceStatistic(studentName,
-        		(String)choGroup.getItems().get(i), mainGroupName, dates);
-        	seriesPres.getData().add(new XYChart.Data<String, Number>(
-        		(String)choGroup.getItems().get(i),
-        		Integer.parseInt(l.get(1))));
-        	seriesAbs.getData().add(new XYChart.Data<String, Number>(
-        		(String)choGroup.getItems().get(i),
-        		Integer.parseInt(l.get(2))));
-            }
-            List<Series<String, Number>> series = new LinkedList<>();
-            series.add(seriesPres);
-            series.add(seriesAbs);
-            sbc.getXAxis().setLabel("Група");
-            sbc.getYAxis().setLabel("Кількість");
-            sbc.setTitle("Відвідуваність");
-            
-            sbc.setData(FXCollections.observableList(series));
-            
-        }
-        else 
-        {
-            VBox parent = (VBox) chrtMark.getParent();
-            if(parent.getChildren().contains(chrtPresenceAll))
-            {
-        	parent.getChildren().remove(chrtPresenceAll);
-            }
-            if(!parent.getChildren().contains(chrtPresence))
-            {
-        	parent.getChildren().add(chrtPresence);
-            }
-            
-            StackedBarChart<String, Number> sbc = chrtPresenceAll;
+	lineChart.setAnimated(false);
+	lineChart.getXAxis().setLabel("Дата");
+	lineChart.getYAxis().setLabel("Оцінка");
+	lineChart.setTitle("Успішність");
+	List<Series<String, Number>> seriesList = new LinkedList<>();
+	for (List<Visiting> l : allVisits)
+	{
+	    XYChart.Series<String, Number> series = new XYChart.Series<>();
+	    for (Visiting v : l)
+	    {
+		series.getData().add(new XYChart.Data(v.getDate().toString(), v.getMark()));
+	    }
+	    if (choGroup.getValue().equals("<Всі>"))
+	    {
+		series.setName((String) choGroup.getItems().get(allVisits.indexOf(l) + 1));
+	    } else
+	    {
+		series.setName((String) choGroup.getValue());
+	    }
+	    seriesList.add(series);
+	}
+	lineChart.setData(FXCollections.observableList(seriesList));
 
+	if (choGroup.getValue().equals("<Всі>"))
+	{
+	    VBox parent = (VBox) chrtMark.getParent();
+	    if (!parent.getChildren().contains(chrtPresenceAll))
+	    {
+		parent.getChildren().add(chrtPresenceAll);
+	    }
+	    if (parent.getChildren().contains(chrtPresence))
+	    {
+		parent.getChildren().remove(chrtPresence);
+	    }
 
-            
-            String dates = "";
-            if(!cheAllTime.isSelected())
-       		{
-        	   dates = dateFrom + " " + dateTo;
-        	}
-            
-            List<String> statistic = Student.getPresenceStatistic(studentName,
-    		(String)choGroup.getValue(), mainGroupName, dates);
-  
-            
-            List<PieChart.Data> series = new LinkedList<>();
-            series.add(new PieChart.Data("Присутність", Integer.parseInt(statistic.get(1))));
-            series.add(new PieChart.Data("Відсутність", Integer.parseInt(statistic.get(2))));
-            chrtPresence.setData(FXCollections.observableList(series));
-            chrtPresence.setTitle("Відвідуваність");
-        }
+	    StackedBarChart<String, Number> sbc = chrtPresenceAll;
+	    sbc.setTitle("Country Summary");
+
+	    String dates = "";
+	    if (!cheAllTime.isSelected())
+	    {
+		dates = dateFrom + " " + dateTo;
+	    }
+
+	    final XYChart.Series<String, Number> seriesPres = new XYChart.Series<String, Number>();
+	    final XYChart.Series<String, Number> seriesAbs = new XYChart.Series<String, Number>();
+
+	    seriesPres.setName("Присутність");
+	    seriesAbs.setName("Відсутність");
+	    for (int i = 1; i < choGroup.getItems().size(); i++)
+	    {
+		List<String> l = Student.getPresenceStatistic(studentName, (String) choGroup.getItems().get(i),
+			mainGroupName, dates);
+		seriesPres.getData().add(new XYChart.Data<String, Number>((String) choGroup.getItems().get(i),
+			Integer.parseInt(l.get(1))));
+		seriesAbs.getData().add(new XYChart.Data<String, Number>((String) choGroup.getItems().get(i),
+			Integer.parseInt(l.get(2))));
+	    }
+	    List<Series<String, Number>> series = new LinkedList<>();
+	    series.add(seriesPres);
+	    series.add(seriesAbs);
+	    sbc.getXAxis().setLabel("Група");
+	    sbc.getYAxis().setLabel("Кількість");
+	    sbc.setTitle("Відвідуваність");
+
+	    sbc.setData(FXCollections.observableList(series));
+
+	} else
+	{
+	    VBox parent = (VBox) chrtMark.getParent();
+	    if (parent.getChildren().contains(chrtPresenceAll))
+	    {
+		parent.getChildren().remove(chrtPresenceAll);
+	    }
+	    if (!parent.getChildren().contains(chrtPresence))
+	    {
+		parent.getChildren().add(chrtPresence);
+	    }
+
+	    StackedBarChart<String, Number> sbc = chrtPresenceAll;
+
+	    String dates = "";
+	    if (!cheAllTime.isSelected())
+	    {
+		dates = dateFrom + " " + dateTo;
+	    }
+
+	    List<String> statistic = Student.getPresenceStatistic(studentName, (String) choGroup.getValue(),
+		    mainGroupName, dates);
+
+	    List<PieChart.Data> series = new LinkedList<>();
+	    series.add(new PieChart.Data("Присутність", Integer.parseInt(statistic.get(1))));
+	    series.add(new PieChart.Data("Відсутність", Integer.parseInt(statistic.get(2))));
+	    chrtPresence.setData(FXCollections.observableList(series));
+	    chrtPresence.setTitle("Відвідуваність");
+	}
     }
 
     @FXML
